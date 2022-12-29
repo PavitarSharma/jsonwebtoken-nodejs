@@ -1,0 +1,8 @@
+{
+  "name": "nodejs-jwt",
+  "version": "1.0.0",
+  "description": "Nodejs jsonwebtoken with mongodb and redis database",
+  "main": "app.js",
+  "author": "Pavitar Sharma",
+  "license": "MIT"
+}

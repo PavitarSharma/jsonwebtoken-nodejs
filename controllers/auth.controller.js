@@ -1,6 +1,7 @@
 const User = require("../models/User.model");
 const createError = require("http-errors");
 const { authSchema } = require("../helpers/auth.validation");
+const { signAccessToken } = require("../helpers/jwt_helper");
 
 exports.register = async (req, res, next) => {
   try {
@@ -15,10 +16,11 @@ exports.register = async (req, res, next) => {
 
     const user = new User(result);
     const saveUser = await user.save();
+    const accessToken = await signAccessToken(saveUser._id);
 
     res.json({
       message: "User registeration successfully done",
-      saveUser,
+      accessToken,
     });
   } catch (error) {
     if (error.isJoi === true) error.status = 422;

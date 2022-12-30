@@ -1,4 +1,5 @@
 const JWT = require("jsonwebtoken");
+const createError = require("http-errors")
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -13,7 +14,11 @@ module.exports = {
       };
 
       JWT.sign(payload, secret, options, (err, token) => {
-        if (err) reject(err);
+        if (err) {
+          console.log(err.message)
+          reject(createError.InternalServerError())
+          // reject(err);
+        }
         resolve(token);
       });
     });

@@ -18,7 +18,7 @@ exports.register = async (req, res, next) => {
     const saveUser = await user.save();
     const accessToken = await signAccessToken(saveUser._id);
 
-    res.json({
+    res.status(200).json({
       message: "User registeration successfully done",
       accessToken,
     });
@@ -29,7 +29,25 @@ exports.register = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  res.send("Login route");
+  try {
+    const result = await authSchema.validateAsync(req.body);
+    const user = await User.findOne({ email: result.email });
+    if (!user) throw createError.NotFound("User not found");
+
+    const isMatchPassword = await user.isValidPassword(result.password);
+    if (!isMatchPassword)
+      throw createError.Unauthorized("Username/password not valid");
+
+    const accessToken = await signAccessToken(user._id);
+    
+    res.status(200).json({
+      message: "User looged in successfully",
+      accessToken,
+    });
+  } catch (error) {
+    if (error.isJoi === true) error.status = 422;
+    next(error);
+  }
 };
 
 exports.refreshToken = async (req, res, next) => {

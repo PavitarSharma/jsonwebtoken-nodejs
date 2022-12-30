@@ -1,16 +1,19 @@
 const User = require("../models/User.model");
 const createError = require("http-errors");
+const { authSchema } = require("../helpers/auth.validation");
 
 exports.register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    // const { email, password } = req.body;
 
-    if (!email || !password) throw createError.BadRequest("Email or password must required!");
+    // if (!email || !password) throw createError.BadRequest("Email or password must required!");
 
-    const doesExit = await User.findOne({ email: email });
+    const result = await authSchema.validateAsync(req.body);
+
+    const doesExit = await User.findOne({ email: result.email });
     if (doesExit) throw createError.Conflict("This email is alredy register!");
 
-    const user = new User({ email, password });
+    const user = new User(result);
     const saveUser = await user.save();
 
     res.json({
@@ -18,6 +21,7 @@ exports.register = async (req, res, next) => {
       saveUser,
     });
   } catch (error) {
+    if (error.isJoi === true) error.status = 422;
     next(error);
   }
 };

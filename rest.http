@@ -1,4 +1,5 @@
 GET  http://localhost:3000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYWU5YTg4MzU3OTU4Y2UyNWE4ZjgwMSIsImlhdCI6MTY3MjQxMzE2NSwiZXhwIjoxNjcyNDEzMTgwLCJpc3MiOiJqc29ud2VidG9rZW4ifQ.klMSHk2LA-3kxT_ExsUrFroM6hZksIM-mXnEwJ3gZM0
 
 
 ###
@@ -11,7 +12,7 @@ Content-Type: application/json
 
 
 {
-    "email": "pavtar1234@gmail.com",
+    "email": "pavtar144@gmail.com",
     "password": "1234567"
 }
 
@@ -29,6 +30,12 @@ Content-Type: application/json
 
 ###
 POST  http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYWU5YTg4MzU3OTU4Y2UyNWE4ZjgwMSIsImlhdCI6MTY3MjQxNTc0NywiZXhwIjoxNzAzOTczMzQ3LCJpc3MiOiJqc29ud2VidG9rZW4ifQ.ns_bMTpwvIwthTQ0mqSD48mXR1rEDmM26HS5n_Zu-NM"
+}
 
 
 ###

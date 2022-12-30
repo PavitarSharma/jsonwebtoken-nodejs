@@ -1,7 +1,7 @@
 const User = require("../models/User.model");
 const createError = require("http-errors");
 const { authSchema } = require("../helpers/auth.validation");
-const { signAccessToken } = require("../helpers/jwt_helper");
+const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("../helpers/jwt_helper");
 
 exports.register = async (req, res, next) => {
   try {
@@ -17,10 +17,12 @@ exports.register = async (req, res, next) => {
     const user = new User(result);
     const saveUser = await user.save();
     const accessToken = await signAccessToken(saveUser._id);
+    const refreshToken = await signRefreshToken(saveUser._id);
 
     res.status(200).json({
       message: "User registeration successfully done",
       accessToken,
+      refreshToken,
     });
   } catch (error) {
     if (error.isJoi === true) error.status = 422;
@@ -39,10 +41,12 @@ exports.login = async (req, res, next) => {
       throw createError.Unauthorized("Username/password not valid");
 
     const accessToken = await signAccessToken(user._id);
-    
+    const refreshToken = await signRefreshToken(user._id);
+
     res.status(200).json({
       message: "User looged in successfully",
       accessToken,
+      refreshToken,
     });
   } catch (error) {
     if (error.isJoi === true) error.status = 422;
@@ -51,7 +55,26 @@ exports.login = async (req, res, next) => {
 };
 
 exports.refreshToken = async (req, res, next) => {
-  res.send("refresh token route");
+  try {
+    const { refreshToken } = req.body;
+    if(!refreshToken) {
+      throw createError.BadRequest()
+    }
+
+    const userId = await verifyRefreshToken(refreshToken)
+
+    const accessToken = await signAccessToken(userId);
+    const refToken = await signRefreshToken(userId);
+
+    res.status(200).json({
+      message: "User looged in successfully",
+      accessToken: accessToken,
+      refreshToken: refToken,
+    });
+
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.logout = async (req, res, next) => {

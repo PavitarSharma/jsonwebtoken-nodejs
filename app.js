@@ -6,9 +6,12 @@ require("dotenv").config();
 require("./helpers/mongo.connection")
 const authRoutes = require("./routes/auth.routes");
 const {  verifyAccessToken } = require("./helpers/jwt_helper");
+const client = require("./helpers/redis-connection");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 
 app.use(morgan("dev"))
 app.use(bodyParser.urlencoded({ extended: true }))
